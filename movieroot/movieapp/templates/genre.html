@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>movieroot</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/components.css' %}">
+        <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+        <link rel="stylesheet" href="{% static 'css/responsee.css' %}">
+        <link rel="stylesheet" href="{% static 'owl-carousel/owl.carousel.css' %}">
+        <link rel="stylesheet" href="{% static 'owl-carousel/owl.theme.css' %}">
+        <!-- CUSTOM STYLE -->      
+        <link rel="stylesheet" href="{% static 'css/template-style.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Barlow:100,300,400,700,800&amp;subset=latin-ext" rel="stylesheet">  
+        <script type="text/javascript" src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>   
+     </head>
+
+ <!--
+    You can change the color scheme of the page. Just change the class of the <body> tag. 
+    You can use this class: "primary-color-white", "primary-color-red", "primary-color-orange", "primary-color-blue", "primary-color-aqua", "primary-color-dark" 
+    -->
+    
+    <!--
+    Each element is able to have its own background or text color. Just change the class of the element.  
+    You can use this class: 
+    "background-white", "background-red", "background-orange", "background-blue", "background-aqua", "background-primary" 
+    "text-white", "text-red", "text-orange", "text-blue", "text-aqua", "text-primary"
+    -->
+
+   <body class="size-1520 primary-color-red background-dark">
+      <!-- HEADER -->
+      <header class="grid">
+        <!-- Top Navigation -->
+        <nav class="s-12 grid background-none background-primary-highlight">
+           <!-- logo -->
+           <a href="{% url 'home' %}" class="m-12 l-3 padding-2x logo">
+            <h1>movieroot</h1>
+           </a>
+           <div class="top-nav s-12 l-9"> 
+              <ul class="top-ul right chevron">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'recom' %}">추천</a></li>
+                <li><a href="{% url 'search' %}">검색</a></li>
+                <li><a href="{% url 'genre' %}">장르별</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'signout' %}">로그아웃</a></li>
+                {% else %}
+                    <li><a href="{% url 'signin' %}">로그인</a></li>
+                {% endif %}
+              </ul>
+           </div>
+        </nav>
+      </header>
+      
+      <!-- MAIN -->
+      <main role="main">
+        <!-- TOP SECTION -->
+        <header class="grid">
+        	<div class="s-12 padding-2x">
+            <h1 class="text-strong text-white text-center center text-size-60 text-uppercase margin-bottom-20">장르별 영화추천</h1>
+          </div>
+        </header>
+  
+        
+        <!-- SECTION 1 -->
+        
+        <div class="container">
+            <div class="row" id="movie-container">
+                <!-- 영화 정보 표시 -->
+            </div>
+        </div>
+        <center>
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2>선호하는 장르를 선택하세요</h2>
+                        <select id="genre-select" class="form-control my-3">
+                            <option>장르</option>
+                            <option value="28">액션</option>
+                            <option value="35">코미디</option>
+                            <option value="18">드라마</option>
+                            
+                            <option value="16">애니메이션</option>
+                            <option value="80">범죄</option>
+                            <option value="99">다큐멘터리</option>
+                            <option value="10751">가족</option>
+                            <option value="9648">미스터리</option>
+                            <option value="37">서부</option>
+                            <option value="12">모험</option>
+                            <option value="14">판타지</option>
+                            <option value="36">역사</option>
+                            <option value="27">공포</option>
+                            <option value="10402">음악</option>
+                            <option value="10749">로맨스</option>
+                            <option value="878">공상과학</option>
+                            <option value="53">스릴러</option>
+                            <option value="10752">전쟁</option>
+                            <option value="10770">tv영화</option>
+                            
+        
+        
+                            
+                            <!-- 기타 장르 추가 가능 -->
+                        </select>
+                        <button id="recommend-btn" class="btn btn-primary">추천 받기</button>
+                    
+                    </div>
+                    
+                </div>
+                <br>
+                <div class="row" id="movies-container">
+                    <!-- 추천된 영화 목록이 여기에 표시됩니다 -->
+                </div>
+            </div>
+        
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+         <script>
+            $(document).ready(function() {
+                let page = 1; // 현재 페이지 번호
+        
+                $('#recommend-btn').click(function() {
+                    page = 1; // 추천 받기 버튼을 누를 때마다 페이지를 1로 초기화
+                    const selectedGenre = $('#genre-select').val();
+                    recommendMovies(selectedGenre, page);
+                });
+        
+                $('#prev').click(function(e) {
+                    e.preventDefault(); // 기본 이벤트를 방지
+                    if (page > 1) { // 첫 페이지보다 클 때만 이전 페이지로
+                        page--;
+                        const selectedGenre = $('#genre-select').val();
+                        recommendMovies(selectedGenre, page);
+                    }
+                });
+        
+                $('#next').click(function(e) {
+                    e.preventDefault(); // 기본 이벤트를 방지
+                    page++; // 다음 페이지로
+                    const selectedGenre = $('#genre-select').val();
+                    recommendMovies(selectedGenre, page);
+                });
+        
+                function recommendMovies(genreId, pageNum) {
+                    const apiKey = '41b8d7f430c6240b738b350851b6bad4';
+                    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=ko-KR&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNum}&with_genres=${genreId}`;
+                    
+                    $.get(url, function(data) {
+                        const movies = data.results.slice(0, 9);
+                        if (movies.length > 0) {
+                            displayMovies(movies);
+                        } else {
+                            $('#movies-container').html('<div class="col-12"><p>추천할 영화가 없습니다.</p></div>');
+                        }
+                    });
+                }
+        
+                function displayMovies(movies) {
+                    let moviesHtml = '';
+                    movies.forEach(movie => {
+                        const title = movie.title;
+                        const overview = movie.overview;
+                        const voteAverage = movie.vote_average;
+                        const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/500x750';
+                        moviesHtml += `
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <img src="${posterPath}" class="card-img-top" alt="${title}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${title}</h5>
+                                        <p class="card-text">${overview}</p>
+                                        <p class="card-text">평점: ${voteAverage}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    $('#movies-container').html(moviesHtml);
+                }
+            });
+        </script>
+        
+        <div class="container mt-5">
+            <div class="row" id="movies-container">
+                <!-- 영화 정보가 여기에 표시됩니다 -->
+            </div>
+            <!-- 페이지네이션을 위한 새로운 div 추가 -->
+            <div class="mt-4 d-flex justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#" id="prev">이전</a></li>
+                        <li class="page-item"><a class="page-link" href="#" id="next">다음</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </center>
+      </main>
+      
+       
+                                                                    
+      <script type="text/javascript" src="{% static 'js/responsee.js' %}"></script>
+      <script type="text/javascript" src="{% static 'owl-carousel/owl.carousel.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/template-scripts.js' %}"></script>
+
+   </body>
+</html>

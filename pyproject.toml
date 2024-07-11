@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "movieroot"
+version = "0.1.0"
+description = ""
+authors = ["lenibee"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+Django = "^5.0.6"
+django-rest-framework = "^0.1.0"
+pydantic = "^2.7.1"
+black = "^24.4.2"
+isort = "^5.13.2"
+email-validator = "^2.1.1"
+django-storages = "^1.14.3"
+pillow = "^10.3.0"
+requests = "^2.31.0"
+mysqlclient = "^2.2.4"
+tqdm = "^4.66.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+skip = [".gitignore", "migrations"]
+profile = "black"

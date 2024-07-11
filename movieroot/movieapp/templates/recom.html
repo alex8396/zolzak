@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-US">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>movieroot</title>
+      {% load static %}
+      <link rel="stylesheet" href="{% static 'css/components.css' %}">
+      <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+      <link rel="stylesheet" href="{% static 'css/responsee.css' %}">
+      <link rel="stylesheet" href="{% static 'owl-carousel/owl.carousel.css' %}">
+      <link rel="stylesheet" href="{% static 'owl-carousel/owl.theme.css' %}">
+      <!-- CUSTOM STYLE -->      
+      <link rel="stylesheet" href="{% static 'css/template-style.css' %}">
+      <link href="https://fonts.googleapis.com/css?family=Barlow:100,300,400,700,800&amp;subset=latin-ext" rel="stylesheet">  
+      <script type="text/javascript" src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>   
+   </head>
+
+ <!--
+    You can change the color scheme of the page. Just change the class of the <body> tag. 
+    You can use this class: "primary-color-white", "primary-color-red", "primary-color-orange", "primary-color-blue", "primary-color-aqua", "primary-color-dark" 
+    -->
+    
+    <!--
+    Each element is able to have its own background or text color. Just change the class of the element.  
+    You can use this class: 
+    "background-white", "background-red", "background-orange", "background-blue", "background-aqua", "background-primary" 
+    "text-white", "text-red", "text-orange", "text-blue", "text-aqua", "text-primary"
+    -->
+
+   <body class="size-1520 primary-color-red background-dark">
+      <!-- HEADER -->
+      <header class="grid">
+        <!-- Top Navigation -->
+        <nav class="s-12 grid background-none background-primary-highlight">
+           <!-- logo -->
+           <a href="{% url 'home' %}" class="m-12 l-3 padding-2x logo">
+            <h1>movieroot</h1>
+           </a>
+           <div class="top-nav s-12 l-9"> 
+              <ul class="top-ul right chevron">
+               <li><a href="{% url 'home' %}">Home</a></li>
+               <li><a href="{% url 'recom' %}">추천</a></li>
+                <li><a href="{% url 'search' %}">검색</a></li>
+                <li><a href="{% url 'genre' %}">장르별</a></li>
+               {% if user.is_authenticated %}
+                   <li><a href="{% url 'signout' %}">로그아웃</a></li>
+               {% else %}
+                   <li><a href="{% url 'signin' %}">로그인</a></li>
+               {% endif %}
+              </ul>
+           </div>
+        </nav>
+      </header>
+      
+      <!-- MAIN -->
+      <main role="main">
+        <!-- TOP SECTION -->
+        <header class="grid">
+        	<div class="s-12 padding-2x">
+            <h1 class="text-strong text-white text-center center text-size-60 text-uppercase margin-bottom-20">영화추천</h1>
+            <p class="text-size-20 text-white text-center center text-uppercase">영화추천 방식 소개</p>
+          </div>
+        </header>
+
+          <center>
+        <!-- SEARCH SECTION -->
+        <section class="grid">
+            <div class="s-12 padding-2x search-container">
+                <input type="text" id="movieInput" placeholder="영화 제목을 입력하세요">
+                <button class="search-button" onclick="searchMovie()">검색</button>
+            </div>
+            <div id="movies" class="s-12"></div>
+        </section>
+    </main>
+
+    <script type="text/javascript" src="js/responsee.js"></script>
+    <script type="text/javascript" src="owl-carousel/owl.carousel.js"></script>
+    <script type="text/javascript" src="js/template-scripts.js"></script>
+    <script>
+        const API_KEY = '41b8d7f430c6240b738b350851b6bad4';
+        const API_URL = 'https://api.themoviedb.org/3';
+
+        async function searchMovie() {
+            const input = document.getElementById('movieInput').value;
+            const searchResponse = await fetch(`${API_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(input)}&language=ko-KR`);
+            const searchData = await searchResponse.json();
+            if (searchData.results.length > 0) {
+                const movieId = searchData.results[0].id;
+                const recommendationsResponse = await fetch(`${API_URL}/movie/${movieId}/recommendations?api_key=${API_KEY}&language=ko-KR`);
+                const recommendationsData = await recommendationsResponse.json();
+                displayMovies(recommendationsData.results);
+            } else {
+                document.getElementById('movies').innerHTML = '<p>영화를 찾을 수 없습니다.</p>';
+            }
+        }
+
+        function displayMovies(movies) {
+            const moviesElement = document.getElementById('movies');
+            moviesElement.innerHTML = '';
+            movies.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie');
+                movieElement.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" height="100">
+                    <h3>${movie.title}</h3>
+                    <p>${movie.overview}</p>
+                    <div class="movie-clear"></div>
+                `;
+                moviesElement.appendChild(movieElement);
+            });
+        }
+    </script>
+</body>
+</html>

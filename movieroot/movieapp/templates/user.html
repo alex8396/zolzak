@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free responsive business website template</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsee.css' %}">
+    <link rel="stylesheet" href="{% static 'owl-carousel/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'owl-carousel/owl.theme.css' %}">
+    <!-- CUSTOM STYLE -->      
+    <link rel="stylesheet" href="{% static 'css/template-style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Barlow:100,300,400,700,800&amp;subset=latin-ext" rel="stylesheet">  
+    <style>
+        /* 추가된 스타일 */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-form {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="submit"] {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .login-form input[type="submit"] {
+            background: #ff5555;
+            color: #fff;
+            cursor: pointer;
+        }
+        .register-link {
+            text-align: center;
+        }
+        .register-link a {
+            color: #ff5555;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body class="size-1520 primary-color-red background-dark">
+    <!-- HEADER -->
+    <header class="grid">
+        <!-- Top Navigation -->
+        <nav class="s-12 grid background-none background-primary-hightlight">
+           <!-- logo -->
+           <a href="{% url 'home' %}" class="m-12 l-3 padding-2x logo">
+              <h1>movieroot</h1>
+           </a>
+           <div class="top-nav s-12 l-9"> 
+              <ul class="top-ul right chevron">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'recom' %}">추천</a></li>
+                <li><a href="{% url 'search' %}">검색</a></li>
+                <li><a href="{% url 'genre' %}">장르별</a></li>
+                <li><a href="{% url 'signin' %}">로그인</a></li>
+              </ul>
+           </div>
+        </nav>
+      </header>
+
+    <!-- 로그인 및 회원가입 양식 -->
+    <div class="login-container">
+        <!-- 회원가입 폼 -->
+        <form class="login-form" id="register-form" method="post">
+            {% csrf_token %}
+            <h2>Register</h2>
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="password" name="confirm_password" placeholder="Confirm Password">
+            
+            <input type="submit" value="Register">
+        </form>
+        {% for message in messages %}
+            {{ message.tag }}
+            {{ message }}
+        {% endfor %}
+        <div class="register-link">
+            <a href="{% url 'signin' %}">계정이 있나요? 여기를 눌러 로그인하세요!</a>
+        </div>
+    </div>
+    
+</body>
+</html>
